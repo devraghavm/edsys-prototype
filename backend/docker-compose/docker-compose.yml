@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.4.0
+    container_name: mysql-8.4.0
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: products
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: omsairam
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - application
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    x-bake:
+      platform: linux/amd64
+      provenance: false
+    environment:
+      DATABASE_URL: 'mysql://app_user:omsairam@db:3306/products'
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '9000:8080'
+    networks:
+      - application
+
+volumes:
+  mysql_data:
+
+networks:
+  application:
+    driver: bridge
