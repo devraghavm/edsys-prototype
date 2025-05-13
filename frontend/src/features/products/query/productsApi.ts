@@ -10,7 +10,7 @@ import {
   updateProduct as updateProductAction,
   deleteProduct as deleteProductAction,
   type Product,
-} from './productsSlice';
+} from '../slice/productsSlice';
 import apiClient from '@/api/apiClient';
 import { useDispatch } from 'react-redux';
 
