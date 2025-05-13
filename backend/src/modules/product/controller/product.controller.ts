@@ -8,9 +8,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ProductService } from '../service/product.service';
+import { ProductService } from '@/modules/product/service/product.service';
 import { CreateProductDto, UpdateProductDto } from '../dto';
-import { Product as ProductModel } from '../../../generated/prisma';
+import { Product as ProductModel } from '@/generated/prisma';
 
 @Controller('products')
 export class ProductController {

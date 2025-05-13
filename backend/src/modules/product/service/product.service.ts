@@ -1,9 +1,9 @@
 import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { Prisma, Product } from '../../../generated/prisma';
-import { createCustomError } from 'src/common/utils/helpers';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { ProductDto } from '../dto';
+import { Prisma, Product } from '@/generated/prisma';
+import { createCustomError } from '@/common/utils/helpers';
+import { PrismaService } from '@/modules/prisma/prisma.service';
+import { ProductDto } from '@/modules/product/dto';
 
 @Injectable()
 export class ProductService {

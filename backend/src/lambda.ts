@@ -3,7 +3,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module';
+import { AppModule } from '@/app.module';
 import { FastifyServerOptions, FastifyInstance, fastify } from 'fastify';
 import * as awsLambdaFastify from '@fastify/aws-lambda';
 import {

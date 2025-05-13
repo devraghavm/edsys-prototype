@@ -1,1 +1,1 @@
-export * from './dto/abstract.dto';
+export * from '@/common/dto/abstract.dto';
