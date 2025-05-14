@@ -19,7 +19,7 @@ type QueryOptions = {
   queryFn: () => Promise<Product[]>;
   staleTime: number;
   refetchOnWindowFocus: boolean;
-  refetchInterval: number;
+  refetchInterval: number | false;
   onSuccess: (data: Product[]) => void;
 };
 
@@ -55,7 +55,7 @@ export const useFetchProducts = (): UseQueryResult<Product[], Error> =>
     // In this case, onSuccess won’t be triggered since the queryFn isn’t executed.
     // If the data returned by queryFn matches the existing cached data, React Query optimizes performance by not marking the query as "updated." Since there’s no perceived data change, the onSuccess callback is not called.
     onSuccess: (data) => {
-      console.log('call onSuccess');
+      console.log(`call onSuccess with data: ${data}`);
       const dispatch = useDispatch();
       //dispatch(setItems(data));
     },

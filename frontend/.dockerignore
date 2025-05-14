@@ -1,0 +1,24 @@
+# Ignore node_modules
+node_modules
+
+# Ignore logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore Docker files
+docker-compose
+Dockerfile
+docker-compose.yml
+
+# Ignore build output
+dist
+build
+.tmp
+coverage
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
