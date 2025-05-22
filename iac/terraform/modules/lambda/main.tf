@@ -78,10 +78,8 @@ resource "aws_lambda_function" "rds_proxy_function" {
   environment {
     variables = {
       region: var.aws_region,
-      rds_endpoint: var.rds_proxy_endpoint,
-      port: 3306,
-      username: local.lambda_username.username
-      database: var.database_name
+      lambda_secret_name: var.lambda_secret_name,
+      admin_secret_name: var.admin_secret_name
     }
   }
   
@@ -117,6 +115,11 @@ resource "aws_iam_policy" "lambda-exec-role" {
 {
     "Version": "2012-10-17",
     "Statement": [
+        {
+          "Action": "secretsmanager:GetSecretValue",
+          "Resource": "${var.lambda_secret_arn}",
+          "Effect": "Allow"
+        },
         {
             "Effect": "Allow",
             "Action": [

@@ -78,7 +78,10 @@ resource "aws_secretsmanager_secret_version" "sversion" {
   secret_string = <<EOF
    {
     "username": "${var.username}",
-    "password": "${random_password.lambda_password.result}"
+    "password": "${random_password.lambda_password.result}",
+    "host": "${aws_db_proxy_endpoint.aurora.endpoint}",
+    "port": "3306",
+    "dbname": "${var.database_name}"
    }
 EOF
 }
@@ -93,7 +96,10 @@ resource "aws_secretsmanager_secret_version" "sversion1" {
   secret_string = <<EOF
    {
     "username": "admin",
-    "password": "${random_password.db_password.result}"
+    "password": "${random_password.db_password.result}",
+    "host": "${aws_db_proxy_endpoint.aurora.endpoint}",
+    "port": "3306",
+    "dbname": "${var.database_name}"
    }
 EOF
 }

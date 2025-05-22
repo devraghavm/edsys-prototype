@@ -50,6 +50,8 @@ module "lambda" {
   database_name = var.database_name
   lambda_secret_arn = module.rds.lambda_secret_arn
   lambda_secret_name = module.rds.lambda_secret_name
+  admin_secret_arn = module.rds.admin_secret_arn
+  admin_secret_name = module.rds.admin_secret_name
   account_id = local.account_id
   rds_proxy_resourceid = split("/", module.rds.rds_proxy_arn)[1]
   bucket_name = var.bucket_name
@@ -73,12 +75,12 @@ module "api_gateway" {
   depends_on = [ module.lambda ]
 }
 
-module "s3_cloudfront" {
-  source = "../../modules/s3_cloudfront"
+# module "s3_cloudfront" {
+#   source = "../../modules/s3_cloudfront"
 
-  bucket_name = var.static_website_s3_bucket_name
+#   bucket_name = var.static_website_s3_bucket_name
 
-  depends_on = [ module.api_gateway ]
+#   depends_on = [ module.api_gateway ]
   
-}
+# }
 

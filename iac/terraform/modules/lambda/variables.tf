@@ -48,6 +48,16 @@ variable "lambda_secret_arn" {
   type    = string
 }
 
+variable "admin_secret_name" {
+  description = "name of the secrets manager secret for admin"
+  type    = string
+}
+
+variable "admin_secret_arn" {
+  description = "arn of the secrets manager secret for admin"
+  type    = string 
+}
+
 variable "database_name" {
   description = "The name of the database to create"
   type        = string  

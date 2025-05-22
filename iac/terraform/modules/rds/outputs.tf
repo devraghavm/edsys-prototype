@@ -27,3 +27,13 @@ output "lambda_secret_arn" {
   description = "the arn of the Secrets Manager secret that stores the database user credentials"
   value = aws_secretsmanager_secret.lambda_secret.arn
 }
+
+output "admin_secret_name" {
+  description = "the name of the Secrets Manager secret that stores the database user credentials"
+  value = aws_secretsmanager_secret.aurora-mysql-secret.name
+}
+
+output "admin_secret_arn" {
+  description = "the arn of the Secrets Manager secret that stores the database user credentials"
+  value = aws_secretsmanager_secret.aurora-mysql-secret.arn
+}

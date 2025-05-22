@@ -8,10 +8,10 @@ output "lambda_function_log" {
   value = module.lambda.lambda_function_log
 }
 
-output "cloudfront_distribution_id" {
-  value = module.s3_cloudfront.cloudfront_distribution_id
-}
+# output "cloudfront_distribution_id" {
+#   value = module.s3_cloudfront.cloudfront_distribution_id
+# }
 
-output "cloudfront_domain_name" {
-  value = module.s3_cloudfront.cloudfront_domain_name
-}
+# output "cloudfront_domain_name" {
+#   value = module.s3_cloudfront.cloudfront_domain_name
+# }
