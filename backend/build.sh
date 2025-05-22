@@ -2,7 +2,6 @@
 
 #  Change to the script directory 
 cd "$(dirname "$0")"
-npm install
 npm run build
 # Install node-prune if not already installed
 if ! command -v node-prune &> /dev/null

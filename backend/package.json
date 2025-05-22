@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "clean": "rimraf dist",
+    "clean": "rimraf dist && rimraf node_modules && npm install",
     "copy:prisma": "copyfiles -u 1 \"src/generated/**/*\" dist",
     "build": "npm run clean && npm run copy:prisma && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

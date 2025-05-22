@@ -1,5 +1,6 @@
 resource "aws_s3_bucket" "static_website" {
   bucket = var.bucket_name
+  force_destroy = true
   # acl is deprecated; permissions are managed via the bucket policy
   # acl    = "public-read"
 }
@@ -7,6 +8,14 @@ resource "aws_s3_bucket" "static_website" {
 resource "aws_s3_bucket_acl" "static_website_acl" {
   bucket = aws_s3_bucket.static_website.id
   acl    = "public-read"
+}
+
+resource "aws_s3_bucket_website_configuration" "static_site_bucket_website_config" {
+  bucket = aws_s3_bucket.static_website.id
+
+  index_document {
+    suffix = "index.html"
+  }
 }
 
 resource "null_resource" "my_frontend_buildstep" {
@@ -19,21 +28,18 @@ resource "null_resource" "my_frontend_buildstep" {
   }
 }
 
-resource "aws_s3_object" "index" {
-  bucket      = aws_s3_bucket.static_website.bucket
-  key  = "index.html"
-  source      = file("${path.module}/../../frontend/src/index.html")
-  content_type = "text/html"
+resource "aws_s3_object" "provision_source_files" {
+  bucket = aws_s3_bucket.static_website.id
+
+  # webfiles/ is the Directory contains files to be uploaded to S3
+  for_each = fileset("${path.module}/../../frontend/src/", "**/*.*")
+
+  key          = each.value
+  source       = "${path.module}/../../frontend/src/${each.value}"
+  content_type = each.value
 
   depends_on = [ null_resource.my_frontend_buildstep ]
 }
-
-# resource "aws_s3_bucket_object" "error" {
-#   bucket      = aws_s3_bucket.static_website.bucket
-#   key  = "error.html"
-#   source      = file("${path.module}/error.html")
-#   content_type = "text/html"
-# }
 
 resource "aws_s3_bucket_policy" "static_website_policy" {
   bucket = aws_s3_bucket.static_website.id
