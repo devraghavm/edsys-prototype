@@ -11,7 +11,7 @@ export class SecretsService {
 
   constructor() {
     this.secretsManagerClient = new SecretsManagerClient({
-      region: process.env.AWS_REGION, // Get region from environment variable
+      region: process.env.region, // Get region from environment variable
     });
   }
 

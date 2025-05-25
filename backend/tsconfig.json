@@ -20,7 +20,10 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "types": [
+      "node"
+    ]
   },
   "exclude": [
     "node_modules",
