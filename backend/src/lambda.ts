@@ -36,6 +36,15 @@ async function bootstrapServer(): Promise<NestApp> {
   );
   app.setGlobalPrefix(process.env.API_PREFIX || 'api');
   await app.init();
+  const secretService = app.get('SecretsService');
+  const databaseUrl = await secretService.getDatabaseUrl();
+  if (databaseUrl) {
+    process.env.DATABASE_URL = databaseUrl;
+  } else {
+    throw new Error(
+      'Failed to retrieve and set DATABASE_URL from Secrets Manager',
+    );
+  }
 
   return {
     app,

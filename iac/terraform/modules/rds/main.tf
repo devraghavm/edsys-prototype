@@ -26,26 +26,51 @@ resource "aws_rds_cluster" "aurora_mysql" {
   preferred_backup_window = "07:00-09:00"
   skip_final_snapshot     = true
   vpc_security_group_ids  = [var.security_group_ids.db_mysql]
+  serverlessv2_scaling_configuration {
+    min_capacity = 0.5 # adjust as needed
+    max_capacity = 1   # adjust as needed
+  }
 }
 
 resource "aws_rds_cluster_instance" "cluster_instance" {
-  identifier         = "${var.cluster_identifier}-1"
-  cluster_identifier = aws_rds_cluster.aurora_mysql.id
-  instance_class     = var.db_instance_class
-  db_subnet_group_name    = aws_db_subnet_group.default.id
-  engine             = aws_rds_cluster.aurora_mysql.engine
-  engine_version     = aws_rds_cluster.aurora_mysql.engine_version
+  identifier           = "${var.cluster_identifier}-1"
+  cluster_identifier   = aws_rds_cluster.aurora_mysql.id
+  instance_class       = var.db_instance_class
+  db_subnet_group_name = aws_db_subnet_group.default.id
+  engine               = aws_rds_cluster.aurora_mysql.engine
+  engine_version       = aws_rds_cluster.aurora_mysql.engine_version
+}
+
+resource "aws_iam_role" "ec2_ssm" {
+  name = "ec2-ssm-role-${var.random_string_id}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      },
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_ssm_attach" {
+  role       = aws_iam_role.ec2_ssm.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_instance" "this" {
-  ami           = var.ami_id
-  instance_type = "t3.micro"
-  count = 1
-  vpc_security_group_ids = [var.security_group_ids.lambda_sg, var.security_group_ids.ec2_sg]
-  subnet_id = var.app_subnet_ids[0]
+  ami                         = var.ami_id
+  instance_type               = "t3.micro"
+  count                       = 1
+  vpc_security_group_ids      = [var.security_group_ids.lambda_sg, var.security_group_ids.ec2_sg]
+  subnet_id                   = var.app_subnet_ids[0]
   associate_public_ip_address = false
-  depends_on = [aws_rds_cluster_instance.cluster_instance, aws_secretsmanager_secret_version.sversion, aws_secretsmanager_secret_version.sversion1]
-  user_data = <<EOF
+  depends_on                  = [aws_rds_cluster_instance.cluster_instance, aws_secretsmanager_secret_version.sversion, aws_secretsmanager_secret_version.sversion1]
+  iam_instance_profile        = aws_iam_instance_profile.ec2_ssm_profile.name
+  user_data                   = <<EOF
 #!/bin/bash
 
 sudo yum update
@@ -56,10 +81,23 @@ CREATE USER '${var.username}'@'%' IDENTIFIED BY '${random_password.lambda_passwo
 CREATE DATABASE IF NOT EXISTS ${var.database_name};
 GRANT SELECT, INSERT, UPDATE ON ${var.database_name}.* TO '${var.username}';
 FLUSH PRIVILEGES;
+USE ${var.database_name};
+CREATE TABLE IF NOT EXISTS `Product` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 MY_QUERY
 
 echo done
 EOF
+}
+
+resource "aws_iam_instance_profile" "ec2_ssm_profile" {
+  name = "ec2-ssm-profile-${var.random_string_id}"
+  role = aws_iam_role.ec2_ssm.name
 }
 
 resource "random_password" "lambda_password" {
@@ -69,12 +107,12 @@ resource "random_password" "lambda_password" {
 }
 
 resource "aws_secretsmanager_secret" "lambda_secret" {
-  name = "lambda_secret"
+  name                    = "lambda_secret"
   recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "sversion" {
-  secret_id = aws_secretsmanager_secret.lambda_secret.id
+  secret_id     = aws_secretsmanager_secret.lambda_secret.id
   secret_string = <<EOF
    {
     "username": "${var.username}",
@@ -87,12 +125,12 @@ EOF
 }
 
 resource "aws_secretsmanager_secret" "aurora-mysql-secret" {
-  name = "aurora-mysql-secret"
+  name                    = "aurora-mysql-secret"
   recovery_window_in_days = 0
 }
 
 resource "aws_secretsmanager_secret_version" "sversion1" {
-  secret_id = aws_secretsmanager_secret.aurora-mysql-secret.id
+  secret_id     = aws_secretsmanager_secret.aurora-mysql-secret.id
   secret_string = <<EOF
    {
     "username": "admin",
@@ -120,7 +158,7 @@ resource "aws_db_proxy" "mysql_proxy" {
     iam_auth    = "REQUIRED"
     secret_arn  = aws_secretsmanager_secret.aurora-mysql-secret.arn
   }
-  
+
   auth {
     auth_scheme = "SECRETS"
     description = "RDS Proxy with IAM auth for lambda"
@@ -141,10 +179,10 @@ resource "aws_db_proxy_default_target_group" "default" {
 }
 
 resource "aws_db_proxy_target" "db_cluster" {
-  db_cluster_identifier  = aws_rds_cluster.aurora_mysql.id
-  db_proxy_name          = aws_db_proxy.mysql_proxy.name
-  target_group_name      = aws_db_proxy_default_target_group.default.name
-  depends_on = [aws_rds_cluster.aurora_mysql, aws_db_proxy.mysql_proxy, aws_rds_cluster_instance.cluster_instance]
+  db_cluster_identifier = aws_rds_cluster.aurora_mysql.id
+  db_proxy_name         = aws_db_proxy.mysql_proxy.name
+  target_group_name     = aws_db_proxy_default_target_group.default.name
+  depends_on            = [aws_rds_cluster.aurora_mysql, aws_db_proxy.mysql_proxy, aws_rds_cluster_instance.cluster_instance]
 }
 
 resource "aws_db_proxy_endpoint" "aurora" {

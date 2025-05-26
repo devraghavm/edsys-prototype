@@ -1,11 +1,16 @@
-variable "bucket_name" {
-  description = "name of the s3 bucket"
-  type    = string
+# variable "bucket_name" {
+#   description = "name of the s3 bucket"
+#   type    = string
+# }
+
+variable "lambda_image_tag" {
+  description = "Tag for the Lambda container image in ECR"
+  type        = string
 }
 
 variable "vpc_subnets" {
   description = "vpc subnets for lambda function"
-  type    = list(string)
+  type        = list(string)
 }
 
 variable "security_group" {
@@ -25,7 +30,7 @@ variable "rds_proxy_endpoint" {
 
 variable "lambda_log_retention" {
   description = "cloudwatch log retention setting"
-  type    = number
+  type        = number
 }
 
 variable "account_id" {
@@ -35,32 +40,32 @@ variable "account_id" {
 
 variable "rds_proxy_resourceid" {
   description = "name resource id of the rds proxy for lambda policy;  e.g. prx-some-hash"
-  type    = string
+  type        = string
 }
 
 variable "lambda_secret_name" {
   description = "name of the secrets manager secret for lambda"
-  type    = string
+  type        = string
 }
 
 variable "lambda_secret_arn" {
   description = "arn of the secrets manager secret for lambda"
-  type    = string
+  type        = string
 }
 
 variable "admin_secret_name" {
   description = "name of the secrets manager secret for admin"
-  type    = string
+  type        = string
 }
 
 variable "admin_secret_arn" {
   description = "arn of the secrets manager secret for admin"
-  type    = string 
+  type        = string
 }
 
 variable "database_name" {
   description = "The name of the database to create"
-  type        = string  
+  type        = string
 }
 
 variable "random_string_id" {

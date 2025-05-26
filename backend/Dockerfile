@@ -14,7 +14,7 @@ FROM public.ecr.aws/lambda/nodejs:22
 WORKDIR ${LAMBDA_TASK_ROOT}
 # Copy files from the builder stage
 COPY --from=builder /app/package*.json ${LAMBDA_TASK_ROOT}/
-COPY --from=builder /app/dist ${LAMBDA_TASK_ROOT}/
-COPY --from=builder /app/node_modules ${LAMBDA_TASK_ROOT}/
+COPY --from=builder /app/dist/ ${LAMBDA_TASK_ROOT}/dist/
+COPY --from=builder /app/node_modules ${LAMBDA_TASK_ROOT}/node_modules/
 # Set the Lambda function handler
 CMD ["dist/lambda.handler"]
