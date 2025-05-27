@@ -1,7 +1,16 @@
 # Output value definitions
 
-output "apigwy_url" {
-  description = "URL for API Gateway"
+output "api_gateway_id" {
+  description = "The ID of the API Gateway"
+  value       = aws_api_gateway_rest_api.this.id
+}
 
-  value = aws_apigatewayv2_stage.lambda.invoke_url
+output "api_gateway_execution_arn" {
+  description = "The ID of the API Gateway"
+  value       = aws_api_gateway_rest_api.this.execution_arn
+}
+
+output "api_gateway_base_path_id" {
+  description = "The name of the API Gateway"
+  value       = aws_api_gateway_resource.base_path.id
 }

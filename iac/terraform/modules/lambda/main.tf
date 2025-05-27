@@ -10,84 +10,9 @@ locals {
   )
 }
 
-# resource "aws_s3_bucket" "lambda_bucket" {
-#   bucket_prefix = var.bucket_name
-#   force_destroy = true
-#   tags = {
-#     Name        = "${var.bucket_name}"
-#   }
-# }
-
-# resource "aws_s3_bucket_acl" "private_bucket" {
-#   bucket = aws_s3_bucket.lambda_bucket.id
-#   acl    = "private"
-# }
-
-# resource "null_resource" "my_lambda_buildstep" {
-#   triggers = {
-#     backend_changes = "${base64sha256(join("", fileset("${path.module}/../../backend", "**/*")))}"
-#   }
-
-#   provisioner "local-exec" {
-#     command = "${path.module}/../../../../backend/build.sh"
-#   }
-# }
-
-# data "archive_file" "lambda_source" {
-#   type = "zip"
-
-#   source_dir  = "${path.module}/../../backend/src"
-#   output_path = "${path.module}/../../backend/src.zip"
-
-#   depends_on = [null_resource.my_lambda_buildstep]
-# }
-
-# resource "aws_s3_object" "lambda" {
-#   bucket = aws_s3_bucket.lambda_bucket.id
-
-#   key    = "source.zip"
-#   source = data.archive_file.lambda_source.output_path
-
-#   #etag = filemd5(data.archive_file.lambda_source.output_path)
-#   depends_on = [null_resource.my_lambda_buildstep, data.archive_file.lambda_source]
-
-# }
-
-# //Define lambda function
-# resource "aws_lambda_function" "rds_proxy_function" {
-#   function_name = "rds_proxy_function-${var.random_string_id}"
-
-#   s3_bucket = aws_s3_bucket.lambda_bucket.id
-#   s3_key    = aws_s3_object.lambda.key
-
-#   runtime = "nodejs22.x"
-#   handler = "lambda.handler"
-
-#   source_code_hash = data.archive_file.lambda_source.output_base64sha256
-
-#   description = "function to access RDS Aurora via RDS proxy endpoint"
-
-#   role = aws_iam_role.lambda_exec.arn
-#   timeout = 60
-
-#   vpc_config {
-#     subnet_ids         = var.vpc_subnets
-#     security_group_ids = [var.security_group]
-#   }
-
-#   environment {
-#     variables = {
-#       region: var.aws_region,
-#       lambda_secret_name: var.lambda_secret_name,
-#       admin_secret_name: var.admin_secret_name
-#     }
-#   }
-
-# }
-
 # --- ECR Repository for Lambda Container Images ---
 resource "aws_ecr_repository" "lambda_ecr" {
-  name                 = "lambda-container-repo-${lower(var.random_string_id)}"
+  name                 = "${var.app_name}-${var.lambda_function_name}-lambda-container-repo-${lower(var.random_string_id)}"
   image_tag_mutability = "MUTABLE"
   force_delete         = true
 
@@ -96,13 +21,13 @@ resource "aws_ecr_repository" "lambda_ecr" {
   }
 
   tags = {
-    Name = "Lambda Container Repo"
+    Name = "${var.app_name} ${var.lambda_function_name} Lambda Container Repo"
   }
 }
 
 # --- Lambda Function Using Container Image ---
 resource "aws_lambda_function" "rds_proxy_function" {
-  function_name = "rds_proxy_function-${var.random_string_id}"
+  function_name = "${var.app_name}-${var.lambda_function_name}-function-${var.random_string_id}"
 
   package_type = "Image"
   image_uri    = "${aws_ecr_repository.lambda_ecr.repository_url}:${var.lambda_image_tag}"
@@ -131,7 +56,7 @@ resource "aws_cloudwatch_log_group" "rds_proxy_function" {
 }
 
 resource "aws_iam_role" "lambda_exec" {
-  name = "LambdaRdsProxyRole-${var.random_string_id}"
+  name = "${title(var.app_name)}${title(var.lambda_function_name)}LambdaRole-${var.random_string_id}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -148,7 +73,7 @@ resource "aws_iam_role" "lambda_exec" {
 }
 
 resource "aws_iam_policy" "lambda-exec-role" {
-  name = "LambdaRdsProxyPolicy-${var.random_string_id}"
+  name = "${title(var.app_name)}${title(var.lambda_function_name)}LambdaPolicy-${var.random_string_id}"
 
   policy = <<POLICY
 {

@@ -1,0 +1,325 @@
+@BASE_URL=http://localhost:5001
+@LOCAL_LAMBDA_URL=http://localhost:9000/2015-03-31/functions/function/invocations
+
+### Health Check
+GET {{BASE_URL}}/
+
+### Get all products
+GET {{BASE_URL}}/products
+
+### Get a product by ID
+GET {{BASE_URL}}/products/1
+
+### Create a new product
+POST {{BASE_URL}}/products
+Content-Type: application/json
+
+{
+  "title": "iPhone 16 Pro Max"
+}
+
+### Update a product by ID
+PUT {{BASE_URL}}/products/1
+Content-Type: application/json
+
+{
+  "title": "Samsung Galaxy S25 Ultra"
+}
+
+### Delete a product by ID
+DELETE {{BASE_URL}}/products/1
+
+### HealthCheck from local lambda
+POST {{LOCAL_LAMBDA_URL}}
+Content-Type: application/json
+
+{
+  "resource": "/api",
+  "path": "/api",
+  "httpMethod": "GET",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "123456",
+    "resourcePath": "/api",
+    "httpMethod": "GET",
+    "extendedRequestId": "request-id",
+    "requestTime": "01/Jan/2023:12:00:00 +0000",
+    "path": "/api",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1672531200000,
+    "requestId": "c1234567-d89b-12d3-a456-426614174000",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "domainName": "localhost",
+    "apiId": "1234567890"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
+
+
+### Get all products from local lambda
+POST {{LOCAL_LAMBDA_URL}}
+Content-Type: application/json
+
+{
+  "resource": "/api/products",
+  "path": "/api/products",
+  "httpMethod": "GET",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "123456",
+    "resourcePath": "/api/products",
+    "httpMethod": "GET",
+    "extendedRequestId": "request-id",
+    "requestTime": "01/Jan/2023:12:00:00 +0000",
+    "path": "/api/products",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1672531200000,
+    "requestId": "c1234567-d89b-12d3-a456-426614174000",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "domainName": "localhost",
+    "apiId": "1234567890"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
+
+### Get a product by ID from local lambda
+POST {{LOCAL_LAMBDA_URL}}
+Content-Type: application/json
+
+{
+  "resource": "/api/products/{id}",
+  "path": "/api/products/2",
+  "httpMethod": "GET",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": {
+    "id": "1"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "123456",
+    "resourcePath": "/api/products/{id}",
+    "httpMethod": "GET",
+    "extendedRequestId": "request-id",
+    "requestTime": "01/Jan/2023:12:00:00 +0000",
+    "path": "/api/products/2",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1672531200000,
+    "requestId": "c1234567-d89b-12d3-a456-426614174000",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "domainName": "localhost",  
+    "apiId": "1234567890"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
+
+### Create a new product from local lambda
+POST {{LOCAL_LAMBDA_URL}}
+Content-Type: application/json
+
+{
+  "resource": "/api/products",
+  "path": "/api/products",
+  "httpMethod": "POST",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "123456",
+    "resourcePath": "/api/products",
+    "httpMethod": "POST",
+    "extendedRequestId": "request-id",
+    "requestTime": "01/Jan/2023:12:00:00 +0000",
+    "path": "/api/products",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1672531200000,
+    "requestId": "c1234567-d89b-12d3-a456-426614174000",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "domainName": "localhost",
+    "apiId": "1234567890"
+  },
+  "body": "{\"title\":\"iPhone 16 Pro Max\"}",
+  "isBase64Encoded": false
+}
+
+### Update a product by ID from local lambda
+POST {{LOCAL_LAMBDA_URL}}
+Content-Type: application/json
+
+{
+  "resource": "/api/products/{id}",
+  "path": "/api/products/2",
+  "httpMethod": "PUT",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": {
+    "id": "1"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "123456",
+    "resourcePath": "/api/products/{id}",
+    "httpMethod": "PUT",
+    "extendedRequestId": "request-id",
+    "requestTime": "01/Jan/2023:12:00:00 +0000",
+    "path": "/api/products/2",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1672531200000,
+    "requestId": "c1234567-d89b-12d3-a456-426614174000",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "domainName": "localhost",
+    "apiId": "1234567890"
+  },
+  "body": "{\"title\":\"Samsung Galaxy S25 Ultra\"}",
+  "isBase64Encoded": false
+}
+
+### Delete a product by ID from local lambda
+POST {{LOCAL_LAMBDA_URL}}
+Content-Type: application/json
+
+{
+  "resource": "/api/products/{id}",
+  "path": "/api/products/1",
+  "httpMethod": "DELETE",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": {
+    "id": "1"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "resourceId": "123456",
+    "resourcePath": "/api/products/{id}",
+    "httpMethod": "DELETE",
+    "extendedRequestId": "request-id",
+    "requestTime": "01/Jan/2023:12:00:00 +0000",
+    "path": "/api/products/1",
+    "accountId": "123456789012",
+    "protocol": "HTTP/1.1",
+    "stage": "prod",
+    "domainPrefix": "testPrefix",
+    "requestTimeEpoch": 1672531200000,
+    "requestId": "c1234567-d89b-12d3-a456-426614174000",
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "sourceIp": "127.0.0.1",
+      "principalOrgId": null,
+      "accessKey": null,
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Custom User Agent String",
+      "user": null
+    },
+    "domainName": "localhost",
+    "apiId": "1234567890"
+  },
+  "body": null,
+  "isBase64Encoded": false
+}

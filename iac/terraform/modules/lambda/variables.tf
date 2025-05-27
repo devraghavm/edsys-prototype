@@ -1,7 +1,12 @@
-# variable "bucket_name" {
-#   description = "name of the s3 bucket"
-#   type    = string
-# }
+variable "app_name" {
+  description = "The name of the application"
+  type        = string
+}
+
+variable "lambda_function_name" {
+  description = "The name of the Lambda function"
+  type        = string
+}
 
 variable "lambda_image_tag" {
   description = "Tag for the Lambda container image in ECR"

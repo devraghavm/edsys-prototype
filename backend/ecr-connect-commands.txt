@@ -1,4 +1,0 @@
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125471423.dkr.ecr.us-east-1.amazonaws.com
-docker build --platform linux/amd64 -t lambda-container-repo-fdjkoa:latest .
-docker tag lambda-container-repo-fdjkoa:latest 211125471423.dkr.ecr.us-east-1.amazonaws.com/lambda-container-repo-fdjkoa:latest
-docker push 211125471423.dkr.ecr.us-east-1.amazonaws.com/lambda-container-repo-fdjkoa:latest

@@ -1,3 +1,9 @@
+variable "app_name" {
+  description = "The name of the application"
+  type        = string
+  default     = "edsys"
+}
+
 variable "aws_region" {
   description = "The AWS region to deploy the infrastructure"
   type        = string
@@ -40,12 +46,6 @@ variable "db_azs" {
   default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
 }
 
-variable "cluster_identifier" {
-  description = "The identifier for the RDS cluster"
-  type        = string
-  default     = "edsys-aurora-mysql-cluster"
-}
-
 variable "db_instance_class" {
   description = "The instance class for the RDS database."
   type        = string
@@ -76,23 +76,11 @@ variable "ami_id" {
   default     = "ami-0953476d60561c955"
 }
 
-variable "rds_proxy_name" {
-  description = "Name of the RDS proxy"
-  type        = string
-  default     = "test-aurora-mysql"
-}
-
 variable "log_retention" {
   description = "log retention in days"
   type        = number
   default     = 7
 }
-
-# variable "bucket_name" {
-#   description = "name of the s3 bucket"
-#   type        = string
-#   default     = "lambda-rdsproxy"
-# }
 
 variable "lambda_log_retention" {
   description = "cloudwatch log retention setting"
@@ -100,10 +88,16 @@ variable "lambda_log_retention" {
   default     = 7
 }
 
-variable "database_name" {
+variable "feature_database_name" {
   description = "The name of the database to create"
   type        = string
   default     = "products"
+}
+
+variable "admin_database_name" {
+  description = "The name of the database to create"
+  type        = string
+  default     = "admin"
 }
 
 variable "static_website_s3_bucket_name" {
@@ -116,4 +110,10 @@ variable "lambda_image_tag" {
   description = "Tag for the Lambda container image in ECR"
   type        = string
   default     = "latest"
+}
+
+variable "environment" {
+  description = "The environment for the deployment (e.g., dev, prod)"
+  type        = string
+  default     = "dev"
 }

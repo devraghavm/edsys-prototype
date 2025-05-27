@@ -1,59 +1,60 @@
-resource "aws_apigatewayv2_api" "this" {
-  name          = "edsys-http-lambda-rds-proxy"
-  protocol_type = "HTTP"
+resource "aws_api_gateway_rest_api" "this" {
+  name        = "${var.app_name}-api-gateway"
+  description = "REST API Gateway for Lambda RDS Proxy"
 }
 
-resource "aws_cloudwatch_log_group" "api_gw" {
-  name = "/aws/api_gw/${aws_apigatewayv2_api.this.name}"
-
-  retention_in_days = var.lambda_log_retention
+resource "aws_api_gateway_resource" "base_path" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  parent_id   = aws_api_gateway_rest_api.this.root_resource_id
+  path_part   = var.base_path
 }
 
-resource "aws_apigatewayv2_stage" "lambda" {
-  api_id = aws_apigatewayv2_api.this.id
+# CORS for base_path
+resource "aws_api_gateway_method" "base_path_options" {
+  rest_api_id   = aws_api_gateway_rest_api.this.id
+  resource_id   = aws_api_gateway_resource.base_path.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
 
-  name        = "$default"
-  auto_deploy = true
-
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.api_gw.arn
-
-    format = jsonencode({
-      requestId               = "$context.requestId"
-      sourceIp                = "$context.identity.sourceIp"
-      requestTime             = "$context.requestTime"
-      protocol                = "$context.protocol"
-      httpMethod              = "$context.httpMethod"
-      resourcePath            = "$context.resourcePath"
-      routeKey                = "$context.routeKey"
-      status                  = "$context.status"
-      responseLength          = "$context.responseLength"
-      integrationErrorMessage = "$context.integrationErrorMessage"
-      }
-    )
+resource "aws_api_gateway_integration" "base_path_options" {
+  rest_api_id             = aws_api_gateway_rest_api.this.id
+  resource_id             = aws_api_gateway_resource.base_path.id
+  http_method             = aws_api_gateway_method.base_path_options.http_method
+  type                    = "MOCK"
+  integration_http_method = "OPTIONS"
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
   }
 }
 
-resource "aws_apigatewayv2_integration" "lambda" {
-  api_id = aws_apigatewayv2_api.this.id
-
-  integration_uri    = var.lambda_function_invoke_arn
-  integration_type   = "AWS_PROXY"
-  integration_method = "POST"
+resource "aws_api_gateway_method_response" "base_path_options" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.base_path.id
+  http_method = aws_api_gateway_method.base_path_options.http_method
+  status_code = "200"
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+  depends_on = [aws_api_gateway_method.base_path_options]
 }
 
-resource "aws_apigatewayv2_route" "any" {
-  api_id = aws_apigatewayv2_api.this.id
-
-  route_key = "$default"
-  target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
+resource "aws_api_gateway_integration_response" "base_path_options" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.base_path.id
+  http_method = aws_api_gateway_method.base_path_options.http_method
+  status_code = aws_api_gateway_method_response.base_path_options.status_code
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'GET,POST,PUT,DELETE,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+  depends_on = [aws_api_gateway_integration.base_path_options]
 }
 
-resource "aws_lambda_permission" "api_gw" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = var.rds_proxy_function_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${aws_apigatewayv2_api.this.execution_arn}/*/*"
+resource "aws_cloudwatch_log_group" "api_gw" {
+  name              = "/aws/api_gw/${aws_api_gateway_rest_api.this.name}"
+  retention_in_days = var.lambda_log_retention
 }

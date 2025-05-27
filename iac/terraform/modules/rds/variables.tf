@@ -1,3 +1,8 @@
+variable "app_name" {
+  description = "The name of the application"
+  type        = string
+}
+
 variable "aws_region" {
   description = "The AWS region to deploy the infrastructure"
   type        = string
@@ -10,12 +15,12 @@ variable "account_id" {
 
 variable "cluster_identifier" {
   description = "The name of the RDS cluster"
-  type = string
+  type        = string
 }
 
 variable "db_azs" {
   description = "values for db availability zones"
-	type = list
+  type        = list(any)
 }
 
 variable "db_instance_class" {
@@ -36,27 +41,22 @@ variable "db_engine_version" {
 
 variable "username" {
   description = "Username for the RDS database"
-	type = string
-}
-
-variable "ami_id" {
-  description = "AMI ID for the Lambda function"
-	type = string
+  type        = string
 }
 
 variable "rds_proxy_name" {
   description = "Name of the RDS proxy"
-	type = string
+  type        = string
 }
 
 variable "log_retention" {
   description = "log retention in days"
-  type = number
+  type        = number
 }
 
 variable "database_name" {
   description = "The name of the database to create"
-  type        = string  
+  type        = string
 }
 
 variable "db_subnet_ids" {
@@ -76,5 +76,15 @@ variable "security_group_ids" {
 
 variable "random_string_id" {
   description = "Random string to append to resource names"
+  type        = string
+}
+
+variable "rds_prefix" {
+  description = "Prefix for the RDS names"
+  type        = string
+}
+
+variable "aws_db_subnet_group_id" {
+  description = "The ID of the DB subnet group"
   type        = string
 }

@@ -1,11 +1,24 @@
-output "apigwy_url" {
-  description = "URL for API Gateway"
-
-  value = module.api_gateway.apigwy_url
+output "aws_api_gateway_deployment" {
+  description = "URL for API Gateway deployment"
+  value       = module.aws_api_gateway_deployment.api_gateway_invoke_url
 }
 
-output "lambda_function_log" {
-  value = module.lambda.lambda_function_log
+output "feature_lambda_function_log" {
+  value = module.feature_lambda.lambda_function_log
+}
+
+output "admin_lambda_function_log" {
+  value = module.admin_lambda.lambda_function_log
+}
+
+output "feature_aws_ecr_repository_url" {
+  description = "The URL of the ECR repository for the feature Lambda function"
+  value       = module.feature_lambda.aws_ecr_repository_url
+}
+
+output "admin_aws_ecr_repository_url" {
+  description = "The URL of the ECR repository for the admin Lambda function"
+  value       = module.admin_lambda.aws_ecr_repository_url
 }
 
 # output "cloudfront_distribution_id" {

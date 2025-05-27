@@ -1,12 +1,3 @@
-resource "aws_db_subnet_group" "default" {
-  name       = "db main"
-  subnet_ids = var.db_subnet_ids
-
-  tags = {
-    Name = "My DB subnet group"
-  }
-}
-
 resource "random_password" "db_password" {
   length           = 16
   special          = true
@@ -18,7 +9,7 @@ resource "aws_rds_cluster" "aurora_mysql" {
   engine                  = var.db_engine
   engine_version          = var.db_engine_version
   availability_zones      = var.db_azs
-  db_subnet_group_name    = aws_db_subnet_group.default.id
+  db_subnet_group_name    = var.aws_db_subnet_group_id
   database_name           = "mydb"
   master_username         = "admin"
   master_password         = random_password.db_password.result
@@ -36,68 +27,9 @@ resource "aws_rds_cluster_instance" "cluster_instance" {
   identifier           = "${var.cluster_identifier}-1"
   cluster_identifier   = aws_rds_cluster.aurora_mysql.id
   instance_class       = var.db_instance_class
-  db_subnet_group_name = aws_db_subnet_group.default.id
+  db_subnet_group_name = var.aws_db_subnet_group_id
   engine               = aws_rds_cluster.aurora_mysql.engine
   engine_version       = aws_rds_cluster.aurora_mysql.engine_version
-}
-
-resource "aws_iam_role" "ec2_ssm" {
-  name = "ec2-ssm-role-${var.random_string_id}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [{
-      Effect = "Allow",
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      },
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ec2_ssm_attach" {
-  role       = aws_iam_role.ec2_ssm.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-}
-
-resource "aws_instance" "this" {
-  ami                         = var.ami_id
-  instance_type               = "t3.micro"
-  count                       = 1
-  vpc_security_group_ids      = [var.security_group_ids.lambda_sg, var.security_group_ids.ec2_sg]
-  subnet_id                   = var.app_subnet_ids[0]
-  associate_public_ip_address = false
-  depends_on                  = [aws_rds_cluster_instance.cluster_instance, aws_secretsmanager_secret_version.sversion, aws_secretsmanager_secret_version.sversion1]
-  iam_instance_profile        = aws_iam_instance_profile.ec2_ssm_profile.name
-  user_data                   = <<EOF
-#!/bin/bash
-
-sudo yum update
-sudo yum install mysql -y
-
-mysql -u admin -p'${random_password.db_password.result}' -h '${aws_rds_cluster_instance.cluster_instance.endpoint}' <<MY_QUERY
-CREATE USER '${var.username}'@'%' IDENTIFIED BY '${random_password.lambda_password.result}';
-CREATE DATABASE IF NOT EXISTS ${var.database_name};
-GRANT SELECT, INSERT, UPDATE ON ${var.database_name}.* TO '${var.username}';
-FLUSH PRIVILEGES;
-USE ${var.database_name};
-CREATE TABLE IF NOT EXISTS `Product` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `title` VARCHAR(191) NOT NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-MY_QUERY
-
-echo done
-EOF
-}
-
-resource "aws_iam_instance_profile" "ec2_ssm_profile" {
-  name = "ec2-ssm-profile-${var.random_string_id}"
-  role = aws_iam_role.ec2_ssm.name
 }
 
 resource "random_password" "lambda_password" {
@@ -107,7 +39,7 @@ resource "random_password" "lambda_password" {
 }
 
 resource "aws_secretsmanager_secret" "lambda_secret" {
-  name                    = "lambda_secret"
+  name                    = "${var.rds_prefix}-lambda-secret"
   recovery_window_in_days = 0
 }
 
@@ -125,7 +57,7 @@ EOF
 }
 
 resource "aws_secretsmanager_secret" "aurora-mysql-secret" {
-  name                    = "aurora-mysql-secret"
+  name                    = "${var.rds_prefix}-aurora-mysql-secret"
   recovery_window_in_days = 0
 }
 
@@ -187,7 +119,7 @@ resource "aws_db_proxy_target" "db_cluster" {
 
 resource "aws_db_proxy_endpoint" "aurora" {
   db_proxy_name          = aws_db_proxy.mysql_proxy.name
-  db_proxy_endpoint_name = "lambda-aurora-proxy"
+  db_proxy_endpoint_name = "${var.rds_prefix}-lambda-aurora-proxy"
   vpc_subnet_ids         = var.app_subnet_ids
   target_role            = "READ_WRITE"
   vpc_security_group_ids = [var.security_group_ids.db_mysql]
@@ -202,7 +134,7 @@ resource "aws_cloudwatch_log_group" "this" {
 // IAM Role for rds proxy
 
 resource "aws_iam_role" "rds_proxy" {
-  name = "RdsProxyRole-${var.random_string_id}"
+  name = "${title(var.rds_prefix)}RdsProxyRole-${var.random_string_id}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -219,7 +151,7 @@ resource "aws_iam_role" "rds_proxy" {
 }
 
 resource "aws_iam_policy" "rds_proxy_iam" {
-  name = "RdsProxySecretsManager-${var.random_string_id}"
+  name = "${title(var.rds_prefix)}RdsProxySecretsManager-${var.random_string_id}"
 
   policy = <<POLICY
 {

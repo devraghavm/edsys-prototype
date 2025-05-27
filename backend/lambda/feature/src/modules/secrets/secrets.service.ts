@@ -5,6 +5,7 @@ import {
   GetSecretValueCommand,
 } from '@aws-sdk/client-secrets-manager';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Product } from '@/entity';
 
 @Injectable()
 export class SecretsService {
@@ -43,6 +44,7 @@ export class SecretsService {
           database: process.env.MYSQL_DATABASE,
           entities: [__dirname + '/../../entity/**.entity{.ts,.js}'],
           synchronize: true,
+          ssl: { rejectUnauthorized: false },
         } as TypeOrmModuleOptions;
       }
       const credentials = await this.getSecret(
@@ -61,9 +63,10 @@ export class SecretsService {
         port: parseInt(credentials.port, 10),
         username: credentials.username,
         password: token, // Use the token as the password
-        database: credentials.database,
-        entities: [__dirname + '/../entity/**.entity{.ts,.js}'],
+        database: credentials.dbname,
+        entities: [Product],
         synchronize: true,
+        ssl: { rejectUnauthorized: false },
       } as TypeOrmModuleOptions;
     } catch (error) {
       console.error('Error configuring Prisma:', error);
