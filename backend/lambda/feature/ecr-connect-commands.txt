@@ -1,4 +1,4 @@
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125471423.dkr.ecr.us-east-1.amazonaws.com
-docker build --platform linux/amd64 -t edsys-feature-lambda-container-repo-lxrs4d:latest .
-docker tag edsys-feature-lambda-container-repo-lxrs4d:latest 211125471423.dkr.ecr.us-east-1.amazonaws.com/edsys-feature-lambda-container-repo-lxrs4d:latest
-docker push 211125471423.dkr.ecr.us-east-1.amazonaws.com/edsys-feature-lambda-container-repo-lxrs4d:latest
+docker build --platform linux/amd64 -t edsys-feature-lambda-container-repo-ujn8lu:latest .
+docker tag edsys-feature-lambda-container-repo-ujn8lu:latest 211125471423.dkr.ecr.us-east-1.amazonaws.com/edsys-feature-lambda-container-repo-ujn8lu:latest
+docker push 211125471423.dkr.ecr.us-east-1.amazonaws.com/edsys-feature-lambda-container-repo-ujn8lu:latest

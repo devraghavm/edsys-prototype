@@ -8,9 +8,6 @@ module.exports = (options, webpack) => {
 
   return {
     ...options,
-    entry: {
-      lambda: path.resolve(__dirname, 'src/lambda.ts'),
-    },
     externals: [],
     plugins: [
       ...options.plugins,
