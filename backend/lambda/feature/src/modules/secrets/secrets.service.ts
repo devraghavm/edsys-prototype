@@ -65,7 +65,8 @@ export class SecretsService {
         password: token, // Use the token as the password
         database: credentials.dbname,
         entities: [Product],
-        synchronize: true,
+        synchronize: false,
+        migrationsRun: false,
         ssl: { rejectUnauthorized: false },
       } as TypeOrmModuleOptions;
     } catch (error) {

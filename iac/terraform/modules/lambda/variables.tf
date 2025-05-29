@@ -77,3 +77,13 @@ variable "random_string_id" {
   description = "Random string to append to resource names"
   type        = string
 }
+
+variable "lambda_image_build_context" {
+  description = "The build context directory for the Lambda container image"
+  type        = string
+}
+
+variable "aws_profile" {
+  description = "The AWS CLI profile to use for authentication"
+  type        = string
+}

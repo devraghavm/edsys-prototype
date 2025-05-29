@@ -1,0 +1,14 @@
+{
+  "name": "lambda-container-image",
+  "version": "1.0.0",
+  "description": "A Node.js Lambda function packaged as a Docker container.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1000.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

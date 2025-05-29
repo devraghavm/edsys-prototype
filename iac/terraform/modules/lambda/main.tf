@@ -25,6 +25,31 @@ resource "aws_ecr_repository" "lambda_ecr" {
   }
 }
 
+# --- Build and Push Lambda Container Image ---
+
+resource "null_resource" "lambda_image_build_and_push" {
+  provisioner "local-exec" {
+    command = <<EOT
+      aws ecr get-login-password --region ${var.aws_region} | docker login --username AWS --password-stdin ${aws_ecr_repository.lambda_ecr.repository_url}
+      docker build -t ${aws_ecr_repository.lambda_ecr.repository_url}:${var.lambda_image_tag} ${var.lambda_image_build_context}
+      docker push ${aws_ecr_repository.lambda_ecr.repository_url}:${var.lambda_image_tag}
+    EOT
+    environment = {
+      AWS_PROFILE = var.aws_profile
+    }
+  }
+
+  triggers = {
+    image_tag     = var.lambda_image_tag
+    build_context = var.lambda_image_build_context
+    ecr_repo_url  = aws_ecr_repository.lambda_ecr.repository_url
+  }
+
+  depends_on = [
+    aws_ecr_repository.lambda_ecr
+  ]
+}
+
 # --- Lambda Function Using Container Image ---
 resource "aws_lambda_function" "rds_proxy_function" {
   function_name = "${var.app_name}-${var.lambda_function_name}-function-${var.random_string_id}"
@@ -47,6 +72,8 @@ resource "aws_lambda_function" "rds_proxy_function" {
       admin_secret_name  = var.admin_secret_name
     }
   }
+
+  depends_on = [aws_ecr_repository.lambda_ecr, null_resource.lambda_image_build_and_push]
 }
 
 resource "aws_cloudwatch_log_group" "rds_proxy_function" {

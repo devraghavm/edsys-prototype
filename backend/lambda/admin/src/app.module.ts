@@ -12,12 +12,12 @@ import { TypeOrmConfigService } from '@/config/database';
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    SecretsModule,
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
+      inject: [ConfigService, SecretsService],
       useClass: TypeOrmConfigService,
       imports: [ConfigModule, SecretsModule],
     }),
-    SecretsModule,
     ProductModule,
   ],
   controllers: [AppController],

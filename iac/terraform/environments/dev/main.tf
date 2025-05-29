@@ -69,13 +69,13 @@ CREATE DATABASE IF NOT EXISTS ${var.feature_database_name};
 GRANT SELECT, INSERT, UPDATE, DELETE ON ${var.feature_database_name}.* TO '${var.username}';
 FLUSH PRIVILEGES;
 USE \`${var.feature_database_name}\`;
-CREATE TABLE IF NOT EXISTS `product` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(191) NOT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS \`product\` (
+  \`id\` int NOT NULL AUTO_INCREMENT,
+  \`title\` varchar(191) NOT NULL,
+  \`createdAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  \`updatedAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (\`id\`)
+);
 SHOW TABLES;
 MY_QUERY
 
@@ -88,22 +88,24 @@ EOF
 module "feature_lambda" {
   source = "../../modules/lambda"
 
-  app_name             = var.app_name
-  lambda_function_name = "feature"
-  aws_region           = var.aws_region
-  database_name        = var.feature_database_name
-  lambda_secret_arn    = module.feature_rds.lambda_secret_arn
-  lambda_secret_name   = module.feature_rds.lambda_secret_name
-  admin_secret_arn     = module.feature_rds.admin_secret_arn
-  admin_secret_name    = module.feature_rds.admin_secret_name
-  account_id           = local.account_id
-  rds_proxy_resourceid = split(":", module.feature_rds.rds_proxy_arn)[length(split(":", module.feature_rds.rds_proxy_arn)) - 1]
-  lambda_image_tag     = var.lambda_image_tag
-  rds_proxy_endpoint   = module.feature_rds.rds_proxy_endpoint
-  lambda_log_retention = var.lambda_log_retention
-  vpc_subnets          = [module.vpc.lambda_subnet_1, module.vpc.lambda_subnet_2]
-  security_group       = module.vpc.security_group_ids.lambda_sg
-  random_string_id     = random_string.random.id
+  app_name                   = var.app_name
+  lambda_function_name       = "feature"
+  aws_region                 = var.aws_region
+  database_name              = var.feature_database_name
+  lambda_secret_arn          = module.feature_rds.lambda_secret_arn
+  lambda_secret_name         = module.feature_rds.lambda_secret_name
+  admin_secret_arn           = module.feature_rds.admin_secret_arn
+  admin_secret_name          = module.feature_rds.admin_secret_name
+  account_id                 = local.account_id
+  rds_proxy_resourceid       = split(":", module.feature_rds.rds_proxy_arn)[length(split(":", module.feature_rds.rds_proxy_arn)) - 1]
+  lambda_image_tag           = var.lambda_image_tag
+  rds_proxy_endpoint         = module.feature_rds.rds_proxy_endpoint
+  lambda_log_retention       = var.lambda_log_retention
+  vpc_subnets                = [module.vpc.lambda_subnet_1, module.vpc.lambda_subnet_2]
+  security_group             = module.vpc.security_group_ids.lambda_sg
+  random_string_id           = random_string.random.id
+  lambda_image_build_context = "${path.module}/../../lambda-container-image"
+  aws_profile                = "default"
 
   depends_on = [module.vpc, module.feature_rds, module.feature_rds_bastion]
 }
@@ -150,18 +152,18 @@ sudo dnf -y localinstall https://dev.mysql.com/get/mysql80-community-release-el9
 sudo dnf -y install mysql mysql-community-client
 
 mysql -u admin -p'${module.admin_rds.admin_password}' -h '${module.admin_rds.cluster_instance_endpoint}' <<MY_QUERY
-CREATE USER '${var.username}'@'%' IDENTIFIED BY '${module.feature_rds.lambda_password}';
+CREATE USER '${var.username}'@'%' IDENTIFIED BY '${module.admin_rds.lambda_password}';
 CREATE DATABASE IF NOT EXISTS ${var.admin_database_name};
 GRANT SELECT, INSERT, UPDATE, DELETE ON ${var.admin_database_name}.* TO '${var.username}';
 FLUSH PRIVILEGES;
-USE \`${var.feature_database_name}\`;
-CREATE TABLE IF NOT EXISTS `product` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(191) NOT NULL,
-  `createdAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+USE \`${var.admin_database_name}\`;
+CREATE TABLE IF NOT EXISTS \`product\` (
+  \`id\` int NOT NULL AUTO_INCREMENT,
+  \`title\` varchar(191) NOT NULL,
+  \`createdAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  \`updatedAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (\`id\`)
+);
 SHOW TABLES;
 MY_QUERY
 
@@ -174,22 +176,24 @@ EOF
 module "admin_lambda" {
   source = "../../modules/lambda"
 
-  app_name             = var.app_name
-  lambda_function_name = "admin"
-  aws_region           = var.aws_region
-  database_name        = var.admin_database_name
-  lambda_secret_arn    = module.admin_rds.lambda_secret_arn
-  lambda_secret_name   = module.admin_rds.lambda_secret_name
-  admin_secret_arn     = module.admin_rds.admin_secret_arn
-  admin_secret_name    = module.admin_rds.admin_secret_name
-  account_id           = local.account_id
-  rds_proxy_resourceid = split(":", module.admin_rds.rds_proxy_arn)[length(split(":", module.admin_rds.rds_proxy_arn)) - 1]
-  lambda_image_tag     = var.lambda_image_tag
-  rds_proxy_endpoint   = module.admin_rds.rds_proxy_endpoint
-  lambda_log_retention = var.lambda_log_retention
-  vpc_subnets          = [module.vpc.lambda_subnet_1, module.vpc.lambda_subnet_2]
-  security_group       = module.vpc.security_group_ids.lambda_sg
-  random_string_id     = random_string.random.id
+  app_name                   = var.app_name
+  lambda_function_name       = "admin"
+  aws_region                 = var.aws_region
+  database_name              = var.admin_database_name
+  lambda_secret_arn          = module.admin_rds.lambda_secret_arn
+  lambda_secret_name         = module.admin_rds.lambda_secret_name
+  admin_secret_arn           = module.admin_rds.admin_secret_arn
+  admin_secret_name          = module.admin_rds.admin_secret_name
+  account_id                 = local.account_id
+  rds_proxy_resourceid       = split(":", module.admin_rds.rds_proxy_arn)[length(split(":", module.admin_rds.rds_proxy_arn)) - 1]
+  lambda_image_tag           = var.lambda_image_tag
+  rds_proxy_endpoint         = module.admin_rds.rds_proxy_endpoint
+  lambda_log_retention       = var.lambda_log_retention
+  vpc_subnets                = [module.vpc.lambda_subnet_1, module.vpc.lambda_subnet_2]
+  security_group             = module.vpc.security_group_ids.lambda_sg
+  random_string_id           = random_string.random.id
+  lambda_image_build_context = "${path.module}/../../lambda-container-image"
+  aws_profile                = "default"
 
   depends_on = [module.vpc, module.admin_rds, module.admin_rds_bastion]
 }
