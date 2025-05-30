@@ -2,7 +2,7 @@
 @LOCAL_LAMBDA_URL=http://localhost:9000/2015-03-31/functions/function/invocations
 
 ### Health Check
-GET {{BASE_URL}}/
+GET {{BASE_URL}}/heartbeat
 
 ### Get all products
 GET {{BASE_URL}}/products

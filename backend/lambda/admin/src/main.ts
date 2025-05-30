@@ -4,12 +4,14 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
   );
+  app.useLogger(!process.env.AWS_EXECUTION_ENV ? new Logger() : console);
   app.enableCors({
     origin: '*', // Allow requests from this origin
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed HTTP methods

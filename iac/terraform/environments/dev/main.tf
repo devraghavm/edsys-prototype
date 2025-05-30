@@ -157,12 +157,36 @@ CREATE DATABASE IF NOT EXISTS ${var.admin_database_name};
 GRANT SELECT, INSERT, UPDATE, DELETE ON ${var.admin_database_name}.* TO '${var.username}';
 FLUSH PRIVILEGES;
 USE \`${var.admin_database_name}\`;
-CREATE TABLE IF NOT EXISTS \`product\` (
-  \`id\` int NOT NULL AUTO_INCREMENT,
-  \`title\` varchar(191) NOT NULL,
-  \`createdAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  \`updatedAt\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (\`id\`)
+drop table if exists archive_user_roles;
+drop table if exists archive_roles;
+drop table if exists archive_user_details;
+
+CREATE TABLE IF NOT EXISTS archive_user_details (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(50),
+    UNIQUE (user_name)
+);
+
+CREATE TABLE IF NOT EXISTS archive_roles (
+    role_id INT AUTO_INCREMENT PRIMARY KEY,
+    role_name VARCHAR(50) NOT NULL,
+    role_desc VARCHAR(255) NOT NULL,
+    priority TINYINT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS archive_user_roles (
+    user_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id , role_id),
+    FOREIGN KEY (user_id)
+        REFERENCES archive_user_details (user_id)
+        ON UPDATE RESTRICT ON DELETE CASCADE,
+    FOREIGN KEY (role_id)
+        REFERENCES archive_roles (role_id)
+        ON UPDATE RESTRICT ON DELETE CASCADE
 );
 SHOW TABLES;
 MY_QUERY

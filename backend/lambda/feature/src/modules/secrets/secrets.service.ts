@@ -5,7 +5,6 @@ import {
   GetSecretValueCommand,
 } from '@aws-sdk/client-secrets-manager';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Product } from '@/entity';
 
 @Injectable()
 export class SecretsService {
@@ -42,7 +41,7 @@ export class SecretsService {
           username: process.env.MYSQL_USER,
           password: process.env.MYSQL_PASSWORD,
           database: process.env.MYSQL_DATABASE,
-          entities: [__dirname + '/../../entity/**.entity{.ts,.js}'],
+          entities: [__dirname + '/../../entity/**/*.entity.{js,ts}'],
           synchronize: true,
           ssl: { rejectUnauthorized: false },
         } as TypeOrmModuleOptions;
@@ -64,7 +63,7 @@ export class SecretsService {
         username: credentials.username,
         password: token, // Use the token as the password
         database: credentials.dbname,
-        entities: [Product],
+        entities: [__dirname + '/../../entity/**/*.entity.{js,ts}'],
         synchronize: false,
         migrationsRun: false,
         ssl: { rejectUnauthorized: false },

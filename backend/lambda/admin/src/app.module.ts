@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
-import { ProductModule } from '@/modules/product/product.module';
+import { UserModule } from '@/modules/user/user.module';
 import { SecretsService } from '@/modules/secrets/secrets.service';
 import { SecretsModule } from '@/modules/secrets/secrets.module';
 import * as path from 'path';
@@ -18,7 +18,7 @@ import { TypeOrmConfigService } from '@/config/database';
       useClass: TypeOrmConfigService,
       imports: [ConfigModule, SecretsModule],
     }),
-    ProductModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [SecretsService, AppService],

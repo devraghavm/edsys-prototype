@@ -2,32 +2,62 @@
 @LOCAL_LAMBDA_URL=http://localhost:9000/2015-03-31/functions/function/invocations
 
 ### Health Check
-GET {{BASE_URL}}/
+GET {{BASE_URL}}/heartbeat
 
-### Get all products
-GET {{BASE_URL}}/products
+### Get all users
+GET {{BASE_URL}}/users
 
-### Get a product by ID
-GET {{BASE_URL}}/products/1
+### Get all users with roles
+GET {{BASE_URL}}/users/with-roles
 
-### Create a new product
-POST {{BASE_URL}}/products
+### Get a user by ID
+GET {{BASE_URL}}/users/1
+
+### Get a user by ID with roles
+GET {{BASE_URL}}/users/16/with-roles
+
+### Create a new user
+POST {{BASE_URL}}/users
 Content-Type: application/json
 
 {
-  "title": "iPhone 16 Pro Max"
+  "user_name": "rmedapati",
+  "first_name": "Raghav",
+  "last_name": "Medapati",
+  "email": "rmedapati@example.com" 
+}
+
+### Create a new user with roles
+POST {{BASE_URL}}/users/with-roles
+Content-Type: application/json
+
+{
+  "user_name": "rmedapati",
+  "first_name": "Raghav",
+  "last_name": "Medapati",
+  "email": "rmedapati@example.com",
+  "roles": [1, 2]
 }
 
 ### Update a product by ID
-PUT {{BASE_URL}}/products/1
+PUT {{BASE_URL}}/users/10
 Content-Type: application/json
 
 {
-  "title": "Samsung Galaxy S25 Ultra"
+  "first_name": "Raghavendra"
+}
+
+### Update a product by ID with roles
+PUT {{BASE_URL}}/users/20/with-roles
+Content-Type: application/json
+
+{
+  "first_name": "Raghavendra",
+  "roles": [1, 3]
 }
 
 ### Delete a product by ID
-DELETE {{BASE_URL}}/products/1
+DELETE {{BASE_URL}}/users/19
 
 ### HealthCheck from local lambda
 POST {{LOCAL_LAMBDA_URL}}
