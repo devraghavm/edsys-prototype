@@ -64,8 +64,8 @@ POST {{LOCAL_LAMBDA_URL}}
 Content-Type: application/json
 
 {
-  "resource": "/api",
-  "path": "/api",
+  "resource": "/api/admin/heartbeat",
+  "path": "/api/admin/heartbeat",
   "httpMethod": "GET",
   "headers": {
     "Content-Type": "application/json"
@@ -75,11 +75,11 @@ Content-Type: application/json
   "stageVariables": null,
   "requestContext": {
     "resourceId": "123456",
-    "resourcePath": "/api",
+    "resourcePath": "/api/admin/heartbeat",
     "httpMethod": "GET",
     "extendedRequestId": "request-id",
     "requestTime": "01/Jan/2023:12:00:00 +0000",
-    "path": "/api",
+    "path": "/api/admin/heartbeat",
     "accountId": "123456789012",
     "protocol": "HTTP/1.1",
     "stage": "prod",

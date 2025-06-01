@@ -34,7 +34,7 @@ async function bootstrapServer(): Promise<NestApp> {
       logger: !process.env.AWS_EXECUTION_ENV ? new Logger() : console,
     },
   );
-  app.setGlobalPrefix(process.env.API_PREFIX || 'api/admin');
+  app.setGlobalPrefix(process.env.API_PREFIX ?? 'api/admin');
   await app.init();
 
   return {

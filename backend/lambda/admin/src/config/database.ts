@@ -14,6 +14,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
     // const dataSource = new DataSource(options);
     // await dataSource.initialize();
 
-    return options as TypeOrmModuleOptions;
+    return options;
   }
 }

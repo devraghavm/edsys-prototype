@@ -5,7 +5,6 @@ import { AppService } from '@/app.service';
 import { UserModule } from '@/modules/user/user.module';
 import { SecretsService } from '@/modules/secrets/secrets.service';
 import { SecretsModule } from '@/modules/secrets/secrets.module';
-import * as path from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from '@/config/database';
 
