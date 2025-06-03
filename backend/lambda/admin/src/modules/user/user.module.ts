@@ -5,6 +5,8 @@ import { ArchiveUserRole } from '@/entity/archive-user-roles.entity';
 import { ArchiveRoles } from '@/entity/archive-roles.entity';
 import { UserService } from './service/user.service';
 import { UserController } from './controller/user.controller';
+import { RoleService } from './service/role.service';
+import { RoleController } from './controller/role.controller';
 
 @Module({
   imports: [
@@ -14,8 +16,8 @@ import { UserController } from './controller/user.controller';
       ArchiveRoles,
     ]),
   ],
-  providers: [UserService],
-  controllers: [UserController],
-  exports: [UserService],
+  providers: [UserService, RoleService],
+  controllers: [UserController, RoleController],
+  exports: [UserService, RoleService],
 })
 export class UserModule {}

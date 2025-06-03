@@ -13,6 +13,7 @@ import {
 } from 'aws-lambda';
 import { Logger } from '@nestjs/common';
 import { LambdaResponse, PromiseHandler } from '@fastify/aws-lambda';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 interface NestApp {
   app: NestFastifyApplication;
@@ -35,6 +36,18 @@ async function bootstrapServer(): Promise<NestApp> {
     },
   );
   app.setGlobalPrefix(process.env.API_PREFIX ?? 'api/admin');
+  const config = new DocumentBuilder()
+    .setTitle('Admin API')
+    .setDescription('The Admin API description')
+    .setVersion('1.0')
+    .addTag('admin')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(
+    process.env.API_PREFIX ?? 'api/admin/docs',
+    app,
+    documentFactory,
+  );
   await app.init();
 
   return {

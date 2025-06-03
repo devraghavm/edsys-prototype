@@ -56,6 +56,10 @@ Content-Type: application/json
   "roles": [1, 3]
 }
 
+### Get all roles
+GET {{BASE_URL}}/roles
+
+
 ### Delete a product by ID
 DELETE {{BASE_URL}}/users/19
 

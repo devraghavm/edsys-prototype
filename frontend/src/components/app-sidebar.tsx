@@ -38,10 +38,18 @@ const data = {
       items: [
         {
           title: 'Manage Users',
-          url: '#',
+          url: '/users',
+        },
+        {
+          title: 'Add User',
+          url: '/users/add',
         },
         {
           title: 'Manage Roles',
+          url: '#',
+        },
+        {
+          title: 'Add Role',
           url: '#',
         },
       ],

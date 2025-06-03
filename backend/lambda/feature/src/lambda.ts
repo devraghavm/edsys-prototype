@@ -13,6 +13,7 @@ import {
 } from 'aws-lambda';
 import { Logger } from '@nestjs/common';
 import { LambdaResponse, PromiseHandler } from '@fastify/aws-lambda';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 interface NestApp {
   app: NestFastifyApplication;
@@ -34,7 +35,19 @@ async function bootstrapServer(): Promise<NestApp> {
       logger: !process.env.AWS_EXECUTION_ENV ? new Logger() : console,
     },
   );
-  app.setGlobalPrefix(process.env.API_PREFIX || 'api/feature');
+  app.setGlobalPrefix(process.env.API_PREFIX ?? 'api/feature');
+  const config = new DocumentBuilder()
+    .setTitle('Feature API')
+    .setDescription('The Feature API description')
+    .setVersion('1.0')
+    .addTag('feature')
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(
+    process.env.API_PREFIX ?? 'api/feature/docs',
+    app,
+    documentFactory,
+  );
   await app.init();
 
   return {
