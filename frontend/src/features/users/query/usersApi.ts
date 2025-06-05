@@ -5,12 +5,7 @@ import {
   type UseMutationResult,
   type UseQueryResult,
 } from '@tanstack/react-query';
-import {
-  addUser as addUserAction,
-  updateUser as updateUserAction,
-  deleteUser as deleteUserAction,
-  type User,
-} from '../slice/usersSlice';
+import { deleteUser as deleteUserAction, type User } from '../slice/usersSlice';
 import apiClient from '@/api/apiClient';
 import { useDispatch } from 'react-redux';
 
@@ -42,9 +37,7 @@ export const useFetchUsersWithRoles = (): UseQueryResult<User[], Error> =>
     refetchOnWindowFocus: true,
     refetchInterval: 10000,
     onSuccess: (data) => {
-      console.log(`call onSuccess with data: ${data}`);
-      const dispatch = useDispatch();
-      //dispatch(setUsers(data));
+      console.log(`call onSuccess with data: ${JSON.stringify(data)}`);
     },
   } as QueryOptions);
 

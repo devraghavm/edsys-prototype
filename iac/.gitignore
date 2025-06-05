@@ -29,3 +29,6 @@ terraform.rc
 
 # Ignore .DS_Store files
 .DS_Store
+
+# Ignore SAML metadata files
+**/dev-3aahjweqk1prrzuf_us_auth0_com-metadata.xml

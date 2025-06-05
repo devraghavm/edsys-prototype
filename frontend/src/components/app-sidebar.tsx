@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { NavAdmin } from '@/components/nav-admin';
+import { useAuth } from '@/auth/AuthProvider';
 
 const data = {
   user: {
@@ -133,13 +134,18 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { userPrincipalName } = useAuth();
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <button
+                type="button"
+                className="flex w-full items-center bg-transparent border-none p-0 text-inherit"
+                style={{ background: 'none', border: 'none' }}
+              >
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <User className="size-4" />
                 </div>
@@ -147,7 +153,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-medium">CDLE</span>
                   <span className="truncate text-xs">State of Colorado</span>
                 </div>
-              </a>
+              </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -158,7 +164,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser
+          user={
+            userPrincipalName
+              ? { ...data.user, name: userPrincipalName }
+              : data.user
+          }
+        />
       </SidebarFooter>
     </Sidebar>
   );

@@ -271,6 +271,17 @@ module "aws_api_gateway_deployment" {
   depends_on = [module.aws_api_gateway_feature_resource, module.aws_api_gateway_admin_resource]
 }
 
+module "cognito" {
+  source               = "../../modules/cognito"
+  user_pool_name       = "dev-user-pool"
+  domain_prefix        = "dev-app-auth"
+  random_string_id     = random_string.random.id
+  callback_urls        = ["http://localhost:3000/"]
+  default_redirect_uri = "http://localhost:3000/"
+  logout_urls          = ["http://localhost:3000/"]
+  auth0_metadata_url   = "https://dev-3aahjweqk1prrzuf.us.auth0.com/samlp/metadata"
+}
+
 # module "s3_cloudfront" {
 #   source = "../../modules/s3_cloudfront"
 

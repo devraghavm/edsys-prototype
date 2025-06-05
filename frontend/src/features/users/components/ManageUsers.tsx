@@ -70,6 +70,8 @@ const ManageUsers: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  console.log('ManageUsers users:', users);
+
   // Update redux state when users data changes
   useEffect(() => {
     dispatch(setUsers(users));
