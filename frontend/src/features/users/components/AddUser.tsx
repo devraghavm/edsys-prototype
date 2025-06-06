@@ -80,7 +80,7 @@ const AddUser: React.FC = () => {
   };
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-bold mb-6">Add User</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

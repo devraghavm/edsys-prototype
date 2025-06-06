@@ -63,19 +63,19 @@ const data = {
       icon: Users,
       items: [
         {
-          title: 'Create a Workgroup',
+          title: 'Create Workgroup',
+          url: '/workgroup/create',
+        },
+        {
+          title: 'Delete Workgroup',
           url: '#',
         },
         {
-          title: 'Delete a Workgroup',
+          title: 'Modify Workgroup',
           url: '#',
         },
         {
-          title: 'Modify a Workgroup',
-          url: '#',
-        },
-        {
-          title: 'Move a Workgroup',
+          title: 'Move Workgroup',
           url: '#',
         },
       ],
@@ -86,23 +86,23 @@ const data = {
       icon: BriefcaseBusiness,
       items: [
         {
-          title: 'Create a Position',
+          title: 'Create Position',
           url: '#',
         },
         {
-          title: 'Transfer a Position',
+          title: 'Transfer Position',
           url: '#',
         },
         {
-          title: 'Abolish a Position',
+          title: 'Abolish Position',
           url: '#',
         },
         {
-          title: 'Fill a Position',
+          title: 'Fill Position',
           url: '#',
         },
         {
-          title: 'Changing a Position',
+          title: 'Changing Position',
           url: '#',
         },
       ],

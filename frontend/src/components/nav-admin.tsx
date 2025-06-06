@@ -22,14 +22,14 @@ import {
 export function NavAdmin({
   items,
 }: {
-  items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
+  readonly items: readonly {
+    readonly title: string;
+    readonly url: string;
+    readonly icon: LucideIcon;
+    readonly isActive?: boolean;
+    readonly items?: readonly {
+      readonly title: string;
+      readonly url: string;
     }[];
   }[];
 }) {
