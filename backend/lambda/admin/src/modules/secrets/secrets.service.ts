@@ -8,7 +8,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 @Injectable()
 export class SecretsService {
-  private secretsManagerClient: SecretsManagerClient;
+  private readonly secretsManagerClient: SecretsManagerClient;
 
   constructor() {
     this.secretsManagerClient = new SecretsManagerClient({
@@ -37,7 +37,7 @@ export class SecretsService {
         return {
           type: 'mysql',
           host: process.env.MYSQL_HOST,
-          port: parseInt(process.env.MYSQL_PORT || '3306', 10),
+          port: parseInt(process.env.MYSQL_PORT ?? '3306', 10),
           username: process.env.MYSQL_USER,
           password: process.env.MYSQL_PASSWORD,
           database: process.env.MYSQL_DATABASE,
@@ -47,7 +47,7 @@ export class SecretsService {
         } as TypeOrmModuleOptions;
       }
       const credentials = await this.getSecret(
-        process.env.lambda_secret_name || 'lambda_secret_name',
+        process.env.lambda_secret_name ?? 'lambda_secret_name',
       );
       const signer = new Signer({
         hostname: credentials.host,

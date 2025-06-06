@@ -52,9 +52,9 @@ resource "aws_cognito_identity_provider" "auth0" {
   }
 
   attribute_mapping = {
-    "custom:upn" = "upn"
-    "email"      = "email"
-    "username"   = "user_id"
+    "custom:upn" = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"
+    "email"      = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    "username"   = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
   }
 
   lifecycle {
