@@ -14,6 +14,8 @@ type AuthContextType = {
   userPrincipalName?: string;
 };
 
+const BYPASS_AUTH = import.meta.env.VITE_BYPASS_AUTH === 'true';
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -42,12 +44,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    fetchUser();
-    const listener = (data: any) => {
-      if (['signIn', 'signOut'].includes(data.payload.event)) fetchUser();
-    };
-    const removeListener = Hub.listen('auth', listener);
-    return () => removeListener();
+    if (BYPASS_AUTH) {
+      const dummy = localStorage.getItem('dummy_user');
+      if (dummy) {
+        setUser(JSON.parse(dummy));
+      }
+      setLoading(false);
+    } else {
+      fetchUser();
+      const listener = (data: any) => {
+        if (['signIn', 'signOut'].includes(data.payload.event)) fetchUser();
+      };
+      const removeListener = Hub.listen('auth', listener);
+      setLoading(false);
+      return () => removeListener();
+    }
   }, []);
 
   const signIn = () => {
@@ -55,7 +66,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     void signInWithRedirect({ provider: { custom: 'Auth0' } });
   };
   const signOut = () => {
-    void signOutFromProvider();
+    if (BYPASS_AUTH) {
+      localStorage.removeItem('dummy_user');
+      setUser(null);
+      window.location.reload();
+    } else {
+      void signOutFromProvider();
+    }
   };
 
   const contextValue = React.useMemo(
