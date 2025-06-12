@@ -66,7 +66,7 @@ const Step2: React.FC<Step2Props> = ({ form, onNext, onBack }) => {
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(handleNext)} className="space-y-4 w-full">
-        <h2 className="step-title">Workgroup Matrix</h2>
+        <h3 className="step-title">Workgroup Matrix</h3>
         <div className="org-chart-container">
           <OrgChart
             data={orgChart as OrgChartData}

@@ -72,7 +72,7 @@ const data = {
         },
         {
           title: 'Modify Workgroup',
-          url: '#',
+          url: '/workgroup/modify/:id',
         },
         {
           title: 'Move Workgroup',

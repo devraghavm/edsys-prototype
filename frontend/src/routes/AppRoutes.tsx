@@ -5,6 +5,7 @@ import ManageUsers from '@/features/users/components/ManageUsers';
 import AddUser from '@/features/users/components/AddUser';
 import EditUser from '@/features/users/components/EditUser';
 import CreateWorkgroup from '@/features/workgroup/create-workgroup/components/CreateWorkgroup';
+import ModifyWorkgroup from '@/features/workgroup/modify-workgroup/components/ModifyWorkgroup';
 
 // Dummy sign-in page for local dev bypass
 const DummySignIn: React.FC = () => {
@@ -35,6 +36,7 @@ const routeConfigs = [
   { path: '/users/add', element: <AddUser /> },
   { path: '/users/edit/:id', element: <EditUser /> },
   { path: '/workgroup/create', element: <CreateWorkgroup /> },
+  { path: '/workgroup/modify/:id', element: <ModifyWorkgroup /> },
   { path: '/dummy-signin', element: <DummySignIn /> },
   {
     path: '*',

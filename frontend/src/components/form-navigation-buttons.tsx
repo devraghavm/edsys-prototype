@@ -22,7 +22,7 @@ const FormNavigation: React.FC<Props> = ({
       Back
     </button>
     <button type="submit" disabled={isNextDisabled}>
-      {isLastStep ? 'Submit' : 'Next'}
+      {isLastStep ? 'Review' : 'Next'}
     </button>
   </div>
 );

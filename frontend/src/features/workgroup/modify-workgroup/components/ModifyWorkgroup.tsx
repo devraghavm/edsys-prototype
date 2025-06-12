@@ -2,23 +2,24 @@ import React, { useEffect, useState } from 'react';
 import ProgressBar from '@/components/progress-bar';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  workgroupStep1Schema,
+  workgroupStep2Schema,
+  workgroupStep3Schema,
+  fullWorkgroupSchema,
+  type WorkgroupFormData,
+  type Step1FormData,
+  type Step2FormData,
+  type Step3FormData,
+} from '@/features/workgroup/modify-workgroup/schemas/modify-workgroup-schemas';
 import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import StepReview from './StepReview';
-import { OrgChartCardNode, type OrgChartData } from '@/components/OrgChart';
-import { computeTreeLayout, computeNodeLevels } from '@/utils/treeLayout';
-import {
-  fullWorkgroupSchema,
-  workgroupStep1Schema,
-  workgroupStep2Schema,
-  workgroupStep3Schema,
-  type Step1FormData,
-  type Step2FormData,
-  type Step3FormData,
-  type WorkgroupFormData,
-} from '@/features/workgroup/create-workgroup/schemas/create-workgroup-schemas';
 import disneyOrgData from '@/data/disneyOrgData.json';
+import { type OrgChartData, OrgChartCardNode } from '@/components/OrgChart';
+import { computeTreeLayout, computeNodeLevels } from '@/utils/treeLayout';
+import { useParams } from 'react-router';
 
 const steps = ['Details', 'Matrix', 'Additional Details', 'Review'];
 
@@ -82,7 +83,9 @@ const defaultValues: WorkgroupFormData = {
   address: '',
   city: '',
 };
-const CreateWorkgroup: React.FC = () => {
+
+const ModifyWorkgroup: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<WorkgroupFormData>(defaultValues);
 
@@ -149,7 +152,7 @@ const CreateWorkgroup: React.FC = () => {
       return;
     }
     localStorage.setItem(
-      'CreateWorkgroupData',
+      'ModifyWorkgroupData',
       JSON.stringify(reviewForm.getValues())
     );
     alert('Form submitted! Data saved to localStorage.');
@@ -163,7 +166,7 @@ const CreateWorkgroup: React.FC = () => {
 
   return (
     <div className="w-full space-y-6">
-      <h2 className="page-title">Create Workgroup</h2>
+      <h2 className="page-title">Modify Workgroup</h2>
       <ProgressBar steps={steps} currentStep={currentStep} />
       {currentStep === 0 && <Step1 form={step1Form} onNext={handleNext} />}
       {currentStep === 1 && (
@@ -183,4 +186,4 @@ const CreateWorkgroup: React.FC = () => {
   );
 };
 
-export default CreateWorkgroup;
+export default ModifyWorkgroup;

@@ -1,0 +1,77 @@
+[
+  {
+    "id": "1",
+    "name": "Walt Disney Organization",
+    "department": "Corporate",
+    "position": "Root"
+  },
+  {
+    "id": "2",
+    "name": "Bob Chapek",
+    "department": "Executive",
+    "position": "CEO",
+    "parentId": "1"
+  },
+  {
+    "id": "3",
+    "name": "Christine McCarthy",
+    "department": "Finance",
+    "position": "CFO",
+    "parentId": "2"
+  },
+  {
+    "id": "4",
+    "name": "Alan Horn",
+    "department": "Entertainment",
+    "position": "Chairman",
+    "parentId": "2"
+  },
+  {
+    "id": "5",
+    "name": "Pete Docter",
+    "department": "Pixar",
+    "position": "Director",
+    "parentId": "4"
+  },
+  {
+    "id": "6",
+    "name": "Jennifer Lee",
+    "department": "Animation",
+    "position": "Director",
+    "parentId": "4"
+  },
+  {
+    "id": "7",
+    "name": "Kareem Daniel",
+    "department": "Media",
+    "position": "Chairman",
+    "parentId": "2"
+  },
+  {
+    "id": "8",
+    "name": "Josh D'Amaro",
+    "department": "Parks",
+    "position": "Chairman",
+    "parentId": "1"
+  },
+  {
+    "id": "9",
+    "name": "Ken Potrock",
+    "department": "Disneyland Resort",
+    "position": "President",
+    "parentId": "8"
+  },
+  {
+    "id": "10",
+    "name": "Jeff Vahle",
+    "department": "Walt Disney World",
+    "position": "President",
+    "parentId": "8"
+  },
+  {
+    "id": "11",
+    "name": "Rebecca Campbell",
+    "department": "International Operations",
+    "position": "Chairman"
+  }
+]

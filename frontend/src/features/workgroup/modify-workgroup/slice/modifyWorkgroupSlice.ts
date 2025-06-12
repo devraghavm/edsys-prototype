@@ -1,21 +1,20 @@
-import type { OrgChartData } from '@/components/OrgChart';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 interface FormState {
   step1: { name: string; email: string };
-  step2: OrgChartData;
+  step2: { age: string; gender: string };
   step3: { address: string; city: string };
   step4: {}; // reserved for future steps
 }
 
 const initialState: FormState = {
   step1: { name: '', email: '' },
-  step2: {} as OrgChartData,
+  step2: { age: '', gender: '' },
   step3: { address: '', city: '' },
   step4: {},
 };
 
-const createWorkgroupSlice = createSlice({
+const modifyWorkgroupSlice = createSlice({
   name: 'multiStepForm',
   initialState,
   reducers: {
@@ -33,5 +32,5 @@ const createWorkgroupSlice = createSlice({
 });
 
 export const { setStep1, setStep2, setStep3, resetForm } =
-  createWorkgroupSlice.actions;
-export default createWorkgroupSlice.reducer;
+  modifyWorkgroupSlice.actions;
+export default modifyWorkgroupSlice.reducer;

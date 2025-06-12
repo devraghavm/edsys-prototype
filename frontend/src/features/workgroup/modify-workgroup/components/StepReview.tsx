@@ -47,7 +47,7 @@ const StepReview: React.FC<StepReviewProps> = ({ form, onSubmit, onBack }) => {
 
   return (
     <div className="space-y-4 w-full">
-      <h2 className="step-title">Review</h2>
+      <h2 className="step-title">Worgroup Review</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <strong>Name:</strong> {values.name}

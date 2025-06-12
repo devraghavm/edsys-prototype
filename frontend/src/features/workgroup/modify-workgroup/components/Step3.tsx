@@ -21,7 +21,7 @@ interface Step3Props {
 const Step3: React.FC<Step3Props> = ({ form, onNext, onBack }) => (
   <Form {...form}>
     <form onSubmit={form.handleSubmit(onNext)} className="space-y-4 w-full">
-      <h3 className="step-title">Workgroup Additional Details</h3>
+      <h2 className="step-title">Workgroup Additional Details</h2>
       <FormField
         control={form.control}
         name="address"
